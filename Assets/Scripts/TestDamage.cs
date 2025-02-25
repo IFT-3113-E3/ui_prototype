@@ -6,9 +6,9 @@ public class TestDamage : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) // Appuie sur Espace pour infliger des dégâts
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            healthBar.TakeDamage(10f); // Inflige 10 points de dégâts
+            healthBar.TakeDamage(10f);
         }
     }
 }
