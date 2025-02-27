@@ -11,19 +11,17 @@ public class SkillManager : MonoBehaviour
     public int skill2Cost = 2;
 
     [Header("Effets Visuels")]
-    public ScreenFlashEffect flashEffect; // Remplace les particules par un effet de flash
+    public ScreenFlashEffect flashEffect;
 
     [Header("Références UI")]
     public SkillHUDController hudController;
 
-    private int[] stackCharges; // Stocke la progression de chaque stack
-    private int availableStacks; // Nombre de stacks complets
+    private float totalProgress; // Progression totale (en stacks complets et partiels)
     private int attackCounter;
 
     private void Start()
     {
-        stackCharges = new int[maxStacks];
-        availableStacks = 0;
+        totalProgress = 0f;
         attackCounter = 0;
         hudController.Initialize(maxStacks);
     }
@@ -57,41 +55,23 @@ public class SkillManager : MonoBehaviour
 
     private void UpdateStackProgress()
     {
-        if (availableStacks >= maxStacks) return;
+        if (totalProgress >= maxStacks) return;
 
-        int stackIndex = availableStacks;
-        stackCharges[stackIndex]++;
-        hudController.UpdateStackFill(stackIndex, (float)stackCharges[stackIndex] / attacksPerStack);
+        // Ajouter la progression actuelle
+        totalProgress += 1f / attacksPerStack;
+        attackCounter = 0;
 
-        if (stackCharges[stackIndex] >= attacksPerStack)
-        {
-            availableStacks++;
-            hudController.UpdateAvailableStacks(availableStacks);
-            attackCounter = 0;
-        }
+        // Mettre à jour l'UI
+        hudController.UpdateStacks(totalProgress);
     }
 
     private void TryUseSkill(int cost, Color color)
     {
-        if (availableStacks >= cost)
+        if (totalProgress >= cost)
         {
-            availableStacks -= cost;
-            ResetUsedStacks(cost);
-            hudController.UpdateAvailableStacks(availableStacks);
+            totalProgress -= cost;
+            hudController.UpdateStacks(totalProgress);
             TriggerSkillEffect(color);
-        }
-    }
-
-    private void ResetUsedStacks(int cost)
-    {
-        for (int i = 0; i < cost; i++)
-        {
-            int stackIndex = availableStacks + i;
-            if (stackIndex < maxStacks)
-            {
-                stackCharges[stackIndex] = 0;
-                hudController.UpdateStackFill(stackIndex, 0f);
-            }
         }
     }
 

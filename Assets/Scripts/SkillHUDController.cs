@@ -15,21 +15,18 @@ public class SkillHUDController : MonoBehaviour
         }
     }
 
-    public void UpdateStackFill(int stackIndex, float fillAmount)
-    {
-        if (stackIndex >= 0 && stackIndex < stackFills.Length && stackFills[stackIndex] != null)
-        {
-            stackFills[stackIndex].fillAmount = fillAmount;
-        }
-    }
-
-    public void UpdateAvailableStacks(int available)
+    public void UpdateStacks(float totalProgress)
     {
         for (int i = 0; i < stackFills.Length; i++)
         {
             if (stackFills[i] != null)
             {
-                stackFills[i].color = i < available ? Color.green : Color.gray;
+                // Calculer la progression pour chaque stack
+                float stackProgress = Mathf.Clamp(totalProgress - i, 0f, 1f);
+                stackFills[i].fillAmount = stackProgress;
+
+                // Changer la couleur en fonction de la disponibilité
+                stackFills[i].color = stackProgress > 0 ? Color.green : Color.gray;
             }
         }
     }
