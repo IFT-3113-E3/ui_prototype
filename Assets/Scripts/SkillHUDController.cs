@@ -3,26 +3,34 @@ using UnityEngine.UI;
 
 public class SkillHUDController : MonoBehaviour
 {
-    [Header("Skill 1")]
-    public Button skill1Button;
-    public Image[] skill1Stacks; // Tableau des rectangles (stacks) pour la compétence 1
+    [Header("Références Stacks")]
+    public Image[] stackFills; // Remplissages des stacks
 
-    [Header("Skill 2")]
-    public Button skill2Button;
-    public Image[] skill2Stacks; // Tableau des rectangles (stacks) pour la compétence 2
-
-    public void UpdateStacks(int currentStacks)
+    public void Initialize(int maxStacks)
     {
-        // Mettre à jour les stacks pour la compétence 1
-        for (int i = 0; i < skill1Stacks.Length; i++)
+        // Initialiser l'UI avec le bon nombre de stacks
+        foreach (var fill in stackFills)
         {
-            skill1Stacks[i].gameObject.SetActive(i < currentStacks);
+            if (fill != null) fill.fillAmount = 0f;
         }
+    }
 
-        // Mettre à jour les stacks pour la compétence 2
-        for (int i = 0; i < skill2Stacks.Length; i++)
+    public void UpdateStackFill(int stackIndex, float fillAmount)
+    {
+        if (stackIndex >= 0 && stackIndex < stackFills.Length && stackFills[stackIndex] != null)
         {
-            skill2Stacks[i].gameObject.SetActive(i < currentStacks);
+            stackFills[stackIndex].fillAmount = fillAmount;
+        }
+    }
+
+    public void UpdateAvailableStacks(int available)
+    {
+        for (int i = 0; i < stackFills.Length; i++)
+        {
+            if (stackFills[i] != null)
+            {
+                stackFills[i].color = i < available ? Color.green : Color.gray;
+            }
         }
     }
 }

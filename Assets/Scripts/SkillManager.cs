@@ -2,29 +2,30 @@ using UnityEngine;
 
 public class SkillManager : MonoBehaviour
 {
-    [Header("Settings")]
-    public int maxStacks = 2; // 2 stacks max
-    public int attacksPerStack = 4; // 4 attaques normales pour recharger 1 stack
-    public int stacksPerSkill = 1; // 1 stack par compétence
+    [Header("Paramètres Généraux")]
+    public int maxStacks = 3; // Nombre total de stacks disponibles
+    public int attacksPerStack = 4; // Nombre d'attaques pour recharger 1 stack
 
-    [Header("Effects")]
-    public ParticleSystem skill1Effect;
-    public ParticleSystem skill2Effect;
-    public AudioClip skillSound;
+    [Header("Coûts des Compétences")]
+    public int skill1Cost = 1;
+    public int skill2Cost = 2;
 
-    [Header("UI Reference")]
+    [Header("Effets Visuels")]
+    public ScreenFlashEffect flashEffect; // Remplace les particules par un effet de flash
+
+    [Header("Références UI")]
     public SkillHUDController hudController;
 
-    private int currentStacks;
-    private int attackCounter; // Compteur d'attaques normales
-    private AudioSource audioSource;
+    private int[] stackCharges; // Stocke la progression de chaque stack
+    private int availableStacks; // Nombre de stacks complets
+    private int attackCounter;
 
     private void Start()
     {
-        audioSource = GetComponent<AudioSource>();
-        currentStacks = maxStacks; // Pour tester, à remettre à 0 après
+        stackCharges = new int[maxStacks];
+        availableStacks = 0;
         attackCounter = 0;
-        hudController.UpdateStacks(currentStacks);
+        hudController.Initialize(maxStacks);
     }
 
     private void Update()
@@ -34,62 +35,69 @@ public class SkillManager : MonoBehaviour
 
     private void HandleInput()
     {
-        // Attaque normale (recharge)
+        // Attaque normale (remplissage progressif)
         if (Input.GetMouseButtonDown(0))
         {
             attackCounter++;
-            if (attackCounter >= attacksPerStack)
-            {
-                AddStacks(1);
-                attackCounter = 0;
-            }
+            UpdateStackProgress();
         }
 
-        // Compétence 1 (Bouton 1)
+        // Compétence 1 (Touche 1)
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            TryUseSkill(1);
+            TryUseSkill(skill1Cost, Color.red);
         }
 
-        // Compétence 2 (Bouton 2)
+        // Compétence 2 (Touche 2)
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            TryUseSkill(2);
+            TryUseSkill(skill2Cost, Color.blue);
         }
     }
 
-    public void AddStacks(int amount)
+    private void UpdateStackProgress()
     {
-        currentStacks = Mathf.Min(currentStacks + amount, maxStacks);
-        hudController.UpdateStacks(currentStacks);
+        if (availableStacks >= maxStacks) return;
+
+        int stackIndex = availableStacks;
+        stackCharges[stackIndex]++;
+        hudController.UpdateStackFill(stackIndex, (float)stackCharges[stackIndex] / attacksPerStack);
+
+        if (stackCharges[stackIndex] >= attacksPerStack)
+        {
+            availableStacks++;
+            hudController.UpdateAvailableStacks(availableStacks);
+            attackCounter = 0;
+        }
     }
 
-    private void TryUseSkill(int skillId)
+    private void TryUseSkill(int cost, Color color)
     {
-        if (currentStacks >= stacksPerSkill)
+        if (availableStacks >= cost)
         {
-            currentStacks -= stacksPerSkill;
-            hudController.UpdateStacks(currentStacks);
-            TriggerSkill(skillId);
+            availableStacks -= cost;
+            ResetUsedStacks(cost);
+            hudController.UpdateAvailableStacks(availableStacks);
+            TriggerSkillEffect(color);
         }
     }
 
-    private void TriggerSkill(int skillId)
+    private void ResetUsedStacks(int cost)
     {
-        // Effet visuel et sonore
-        switch(skillId)
+        for (int i = 0; i < cost; i++)
         {
-            case 1:
-                skill1Effect.Play();
-                break;
-            case 2:
-                skill2Effect.Play();
-                break;
+            int stackIndex = availableStacks + i;
+            if (stackIndex < maxStacks)
+            {
+                stackCharges[stackIndex] = 0;
+                hudController.UpdateStackFill(stackIndex, 0f);
+            }
         }
-        
-        if (skillSound != null)
-        {
-            audioSource.PlayOneShot(skillSound);
-        }
+    }
+
+    private void TriggerSkillEffect(Color color)
+    {
+        // Déclencher l'effet de flash
+        if (flashEffect != null) flashEffect.TriggerFlash(color);
     }
 }
