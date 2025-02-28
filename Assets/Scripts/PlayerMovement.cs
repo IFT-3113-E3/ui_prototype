@@ -16,12 +16,31 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        // Récupère les inputs du joueur
-        float moveX = Input.GetAxis("Horizontal"); // A/D ou Q/D
-        float moveZ = Input.GetAxis("Vertical");   // W/S ou Z/S
+        // Initialise le mouvement à zéro
+        Vector3 move = Vector3.zero;
 
-        // Calcule le mouvement
-        Vector3 move = transform.right * moveX + transform.forward * moveZ;
+        // Détecte les touches des flèches directionnelles
+        if (Input.GetKey(KeyCode.UpArrow)) // Flèche vers le haut
+        {
+            move += transform.forward;
+        }
+        if (Input.GetKey(KeyCode.DownArrow)) // Flèche vers le bas
+        {
+            move -= transform.forward;
+        }
+        if (Input.GetKey(KeyCode.RightArrow)) // Flèche vers la droite
+        {
+            move += transform.right;
+        }
+        if (Input.GetKey(KeyCode.LeftArrow)) // Flèche vers la gauche
+        {
+            move -= transform.right;
+        }
+
+        // Normalise le mouvement pour éviter une vitesse accrue en diagonale
+        move = move.normalized;
+
+        // Applique le mouvement
         controller.Move(move * speed * Time.deltaTime);
 
         // Appliquer la gravité

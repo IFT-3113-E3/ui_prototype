@@ -2,17 +2,15 @@ using UnityEngine;
 
 public class ThirdPersonCamera : MonoBehaviour
 {
-    public Transform target;
-    public Vector3 offset = new Vector3(0f, 2f, -4f);
-    public float mouseSensitivity = 100f;
-    public float smoothSpeed = 0.125f;
-
-    private float rotationX = 0f;
-    private float rotationY = 15f;
+    public Transform target; // La cible que la caméra doit suivre (ton personnage)
+    public Vector3 offset = new Vector3(0f, 2f, -4f); // Décalage de la caméra par rapport au personnage
+    public float smoothSpeed = 0.125f; // Lissage des mouvements de la caméra
 
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+        // Déverrouille le curseur de la souris pour pouvoir interagir avec l'UI
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     void LateUpdate()
@@ -20,19 +18,13 @@ public class ThirdPersonCamera : MonoBehaviour
         if (target == null)
             return;
 
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+        // Calcul de la position désirée de la caméra
+        Vector3 desiredPosition = target.position + offset;
 
-        rotationX += mouseX;
-        rotationY -= mouseY;
-        rotationY = Mathf.Clamp(rotationY, -30f, 70f);
-
-        Quaternion rotation = Quaternion.Euler(rotationY, rotationX, 0);
-
-        Vector3 desiredPosition = target.position + rotation * offset;
-
+        // Lissage du mouvement de la caméra
         transform.position = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
 
+        // Oriente la caméra vers le personnage
         transform.LookAt(target);
     }
 }

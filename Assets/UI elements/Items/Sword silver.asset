@@ -13,9 +13,6 @@ MonoBehaviour:
   m_Name: Sword silver
   m_EditorClassIdentifier: 
   itemName: Silver sword
-  description: 
   icon: {fileID: 21300000, guid: 2c6e2c3e597e99546812967698f149a5, type: 3}
-  maxStack: 1
-  isConsumable: 0
-  canSell: 0
-  sellPrice: 0
+  description: "Ep\xE9e d'argent"
+  stats: 5

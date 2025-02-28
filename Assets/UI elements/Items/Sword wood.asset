@@ -13,9 +13,6 @@ MonoBehaviour:
   m_Name: Sword wood
   m_EditorClassIdentifier: 
   itemName: Wooden sword
-  description: 
   icon: {fileID: 21300000, guid: 6e7b58ce9b179bd47856475ea5c0e25e, type: 3}
-  maxStack: 1
-  isConsumable: 0
-  canSell: 0
-  sellPrice: 0
+  description: "Ep\xE9e de bois"
+  stats: 2

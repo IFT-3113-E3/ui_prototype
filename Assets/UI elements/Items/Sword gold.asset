@@ -13,9 +13,6 @@ MonoBehaviour:
   m_Name: Sword gold
   m_EditorClassIdentifier: 
   itemName: Golden Sword
-  description: Attack 10
   icon: {fileID: 21300000, guid: b3c57224e5fbd2a489cb47fbef1403f6, type: 3}
-  maxStack: 1
-  isConsumable: 0
-  canSell: 0
-  sellPrice: 0
+  description: "Ep\xE9e dor\xE9e"
+  stats: 10
