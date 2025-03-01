@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class MapManager : MonoBehaviour
 {
-    public GameObject minimapCanvas; // Canvas de la minimap
-    public GameObject fullMapCanvas; // Canvas de la carte complète
-    public KeyCode toggleKey = KeyCode.M; // Touche pour basculer
+    public GameObject minimapCanvas;
+    public GameObject fullMapCanvas;
+    public KeyCode toggleKey = KeyCode.M;
 
     private bool isFullMapActive = false;
 

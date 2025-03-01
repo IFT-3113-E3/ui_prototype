@@ -17,9 +17,6 @@ public class GameManager : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(gameObject);
-        
-        // Setup and initial configuration
-        // ...
         Log.Info("Game Manager has been instantiated.");
     }
 

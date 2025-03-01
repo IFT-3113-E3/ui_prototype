@@ -28,7 +28,6 @@ public class ScreenFlashEffect : MonoBehaviour
         Color originalColor = flashImage.color;
         flashImage.gameObject.SetActive(true);
 
-        // Fade progressif
         float elapsed = 0f;
         while(elapsed < flashDuration)
         {
